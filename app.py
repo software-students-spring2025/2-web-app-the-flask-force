@@ -67,6 +67,18 @@ def complete_task(task_id):
     
     return redirect(url_for('show_home'))
 
+@app.route('/readd/<task_id>')
+def readd_task(task_id):
+    task = db["completed"].find_one({"_id": ObjectId(task_id)})
+    
+    if task:
+        task["_id"] = ObjectId()
+        task["completed"] = False
+        db["tasks"].insert_one(task)
+        db["completed"].delete_one({"_id": ObjectId(task_id)})
+    
+    return redirect(url_for('show_completed'))
+
 @app.route('/completed')
 def show_completed():
     completed_tasks = db["completed"].find({"completed": True})
