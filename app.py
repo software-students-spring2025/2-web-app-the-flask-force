@@ -21,13 +21,14 @@ db = connection[DATABASE_NAME]
 #print(db)
 
 tasks_collection = db["tasks"]
+tasks_collection.create_index("completed")
 
 app = Flask(__name__)
 
 #Currently just prints "Home" to show app working, needs to acces task collection of DB and display tasks on template (HTML)
 @app.route('/')
 def show_home():
-    tasks = tasks_collection.find({})
+    tasks = tasks_collection.find({"completed": False})
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add', methods=['POST'])
@@ -39,6 +40,7 @@ def add_task():
         task = {
             "name": task_name,
             "completed": False,
+            "deleted": False,
             "due_date": due,
             "description": description,
             "created_time": datetime.datetime.now()
@@ -56,8 +58,19 @@ def delete_task(task_id):
 #Possible TODO: Delete it after completed or something else visually up to you
 @app.route('/complete/<task_id>')
 def complete_task(task_id):
-    tasks_collection.update_one({"_id": ObjectId(task_id)}, {"$set": {"completed": True}})
+    task = tasks_collection.find_one({"_id": ObjectId(task_id)})
+    
+    if task:
+        task["completed"] = True
+        db["completed"].insert_one(task)
+        tasks_collection.delete_one({"_id": ObjectId(task_id)})
+    
     return redirect(url_for('show_home'))
+
+@app.route('/completed')
+def show_completed():
+    completed_tasks = db["completed"].find({"completed": True})
+    return render_template('completed.html', tasks=completed_tasks)
 
 #forms that will allow user to edit the name, description and due date.
 @app.route('/edit/<task_id>', methods=['POST'])

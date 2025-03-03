@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Completed Tasks</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    </head>
+    <body>
+        <h1>Completed Tasks</h1>
+        <ul>
+            {% for task in tasks %}
+                <li class="task">
+                    <a class="task-info">
+                        <h4>{{ task.name }}</h4>
+                        <h5>Due: {{ task.due_date }}</h5>
+                        <p>{{ task.description }}</p>
+                        {% if task.completed %} Completed{% endif %}
+                        {% if not task.completed %}<a href="{{ url_for('complete_task', task_id=task._id) }}">Mark as complete</a>{% endif %}
+                        <br>Task created at: {{ task.created_time }}
+            {% endfor %}
+        </ul>
+        <br>
+        <a href="{{ url_for('show_home') }}">
+            <button>Home</button>
+        </a>
+    </body>
+</html>

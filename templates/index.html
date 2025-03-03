@@ -8,7 +8,7 @@
         <h1>Task Manager</h1>
         <form action="{{ url_for('add_task')}}" method="POST" id="add-task-form">
             <input type="text" name="task" placeholder="Task name">
-            <input type="text" name="due" placeholder="Task due date">
+            <input type="date" name="due" placeholder="Task due date">
             <input type="description" name="description" placeholder="Task description">
             <input type="submit">
         </form>
@@ -26,7 +26,7 @@
                     </a>
                     <form action="{{ url_for('edit_task', task_id=task._id) }}" method="POST" class="edit-task">
                         <input type="text" name="new_name" placeholder="New name">
-                        <input type="text" name="new_due" placeholder="New due date">
+                        <input type="date" name="new_due" placeholder="New due date">
                         <input type="text" name="new_description" placeholder="New description">
                         <input type="submit" value="Edit">
                         <br>
@@ -36,6 +36,9 @@
                     </form>
                 </li>
             {% endfor %}
+            <a href="{{ url_for('show_completed') }}">
+                <button>Completed Tasks</button>
+            </a>
         </ul>
     </body>
 </html>
