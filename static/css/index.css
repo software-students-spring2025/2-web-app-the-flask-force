@@ -1,16 +1,48 @@
+/* styles for doc body*/
+body {
+    font-family: Arial, sans-serif; /* font */
+    margin: 0; 
+    padding: 0; 
+    background-color: #ffffff; /* background to white */
+    color: #000; /* text color to black */
+}
+
+/* task list */
+#tasks {
+    list-style-type: none; /* bullet points */
+    margin: 20px; /* add margin */
+    padding: 0; /* remove padding in list */
+}
+
+/* individual tasks */
+.task {
+    background-color: #fff; /* background to white */
+    border: 1px solid #ccc; /* grey border for task */
+    padding: 10px; /* inside padding */
+    margin-bottom: 10px; 
+}
+
+/* headings in task information */
+.task-info h4, .task-info h5 {
+    margin: 5px 0; /* vertical spacing, no horizontal spacing */
+}
+
+/*  form  */
+input[type="text"], input[type="submit"], button {
+    width: 100%; /* full container width */
+    box-sizing: border-box; /* padding and border in the element's */
+    padding: 8px; /* improve touch */
+    margin-top: 5px; /* Space between form elements */
+}
+
+/* button styling */
+button, input[type="submit"] {
+    background-color: #000; /*  background for buttons set to black */
+    color: white; /* contrasting text */
+    border: none; 
+    cursor: pointer; /* pointer cursor - hover */
+}
+
 .edit-task {
     display: none;
-}
-#tasks {
-    list-style-type: none;
-}
-.task-info * {
-    margin: 0;
-}
-.task-info:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-.task {
-    margin-bottom: 30px
 }
