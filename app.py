@@ -97,3 +97,20 @@ def edit_task(task_id):
     
 if __name__ == '__main__':
     app.run(debug=True)
+
+# new page for search
+@app.route('/search', methods=['GET'])
+def search_tasks():
+    search_term = request.args.get('search', '').strip()  # get search term
+    if not search_term:
+        return render_template('search.html', tasks=[], search_term="")  # empty page
+
+    # search for tasks based on input
+    search_results = tasks_collection.find({
+        "$or": [
+            {"name": {"$regex": search_term, "$options": "i"}}, 
+            {"description": {"$regex": search_term, "$options": "i"}}
+        ]
+    })
+
+    return render_template('search.html', tasks=search_results, search_term=search_term)
