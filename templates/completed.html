@@ -15,6 +15,10 @@
                         {% if task.completed %} Completed{% endif %}
                         {% if not task.completed %}<a href="{{ url_for('complete_task', task_id=task._id) }}">Mark as complete</a>{% endif %}
                         <br>Task created at: {{ task.created_time }}
+                        <br>
+                        <a href="{{ url_for('readd_task', task_id=task._id)}}">
+                            <button>Re-add Task</button>
+                        </a>
             {% endfor %}
         </ul>
         <br>
