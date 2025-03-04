@@ -81,4 +81,5 @@ Register an account and start using and enjoy the task manager app!
 ## Task boards
 
 [Task Board - Sprint 1](https://github.com/orgs/software-students-spring2025/projects/71)
+
 [Task Board - Sprint 2](https://github.com/orgs/software-students-spring2025/projects/114)
