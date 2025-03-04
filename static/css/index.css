@@ -1,6 +1,7 @@
 /* styles for doc body*/
 body {
     font-family: Arial, sans-serif; /* font */
+    font-size: 40px;
     margin: 5px; 
     padding: 0; 
     background-color: #ffffff; /* background to white */
@@ -33,11 +34,13 @@ body {
 }
 
 /*  form  */
-input[type="text"], input[type="submit"], button {
+input[type="text"], input[type="submit"], input[type="date"], button {
     width: 100%; /* full container width */
     box-sizing: border-box; /* padding and border in the element's */
     padding: 8px; /* improve touch */
     margin-top: 5px; /* Space between form elements */
+    min-height: 200px;
+    font-size: 40px;
 }
 
 /* button styling */
@@ -54,5 +57,13 @@ button, input[type="submit"] {
 
 .edit-task {
     display: none;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.5em;
 }
 
