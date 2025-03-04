@@ -34,7 +34,7 @@ body {
 }
 
 /*  form  */
-input[type="text"], input[type="submit"], input[type = "password"], button {
+input[type="text"], input[type="submit"], input[type = "password"], input[type = "date"], button {
     width: 100%; /* full container width */
     box-sizing: border-box; /* padding and border in the element's */
     padding: 8px; /* improve touch */
