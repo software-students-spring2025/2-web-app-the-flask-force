@@ -4,15 +4,15 @@ A little exercise to build a web application following an agile development proc
 
 ## Product vision statement
 
-See instructions. Delete this line and place the Product Vision Statement here.
+Our Task Tracker allows users to efficiently manage their daily tasks and habits, helping them stay organized, track progress, and build consistency within their own individual portals that have a user-friendly design.
 
 ## User stories
 
-See instructions. Delete this line and place a link to the user stories here.
+[User Stories](https://github.com/software-students-spring2025/2-web-app-the-flask-force/issues/11)
 
 ## Steps necessary to run the software
 
-### Cloning the repo
+### Cloning the Repo
 
 Open your terminal (Mac/Linux) or PowerShell(Windows)
 Navigate to the directory where you want to clone the project, and clone it using:
@@ -80,4 +80,5 @@ Register an account and start using and enjoy the task manager app!
 
 ## Task boards
 
-See instructions. Delete this line and place a link to the task boards here.
+[Task Board - Sprint 1](https://github.com/orgs/software-students-spring2025/projects/71)
+[Task Board - Sprint 2](https://github.com/orgs/software-students-spring2025/projects/114)
