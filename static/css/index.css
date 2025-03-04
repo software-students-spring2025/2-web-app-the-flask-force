@@ -24,7 +24,7 @@ body {
 }
 
 .task:hover{
-    background-color: #86a5d0; /* hover background color */
+    background-color: #86a5d0;
     cursor: pointer;
 }
 
@@ -34,7 +34,7 @@ body {
 }
 
 /*  form  */
-input[type="text"], input[type="submit"], input[type="date"], button {
+input[type="text"], input[type="submit"], input[type = "password"], button {
     width: 100%; /* full container width */
     box-sizing: border-box; /* padding and border in the element's */
     padding: 8px; /* improve touch */
