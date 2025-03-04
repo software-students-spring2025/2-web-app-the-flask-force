@@ -23,7 +23,7 @@ body {
 }
 
 .task:hover{
-    background-color: #86a5d0; /* hover background color */
+    background-color: #86a5d0;
     cursor: pointer;
 }
 
@@ -55,4 +55,3 @@ button, input[type="submit"] {
 .edit-task {
     display: none;
 }
-
