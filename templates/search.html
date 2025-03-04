@@ -10,7 +10,7 @@
             <button type="submit">Search</button>
         </form>        
 
-        {% if tasks.count() > 0 %}
+        {% if tasks|length > 0 %}
             <h2>Search Results for "{{ query }}"</h2>
             <ul>
                 {% for task in tasks %}

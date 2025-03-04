@@ -49,7 +49,7 @@ def add_task():
     return redirect(url_for('show_home'))
 
 #Possible TODO: Implement a collection in the DB to store deleted tasks so they can be reinstated (or some other way to do it)
-@app.route('/delete/<task_id>')
+@app.route('/delete/<task_id>', methods = ['POST'])
 def delete_task(task_id):
     tasks_collection.delete_one({"_id": ObjectId(task_id)})
     return redirect(url_for('show_home'))
@@ -106,9 +106,6 @@ def edit_task(task_id):
         tasks_collection.update_one({"_id": ObjectId(task_id)}, {"$set": update_fields})
     
     return redirect(url_for('show_home'))
-    
-if __name__ == '__main__':
-    app.run(debug=True)
 
 # new page for search
 @app.route('/search', methods=['GET'])
@@ -118,11 +115,14 @@ def search_tasks():
         return render_template('search.html', tasks=[], search_term="")  # empty page
 
     # search for tasks based on input
-    search_results = tasks_collection.find({
+    search_results = list(tasks_collection.find({
         "$or": [
             {"name": {"$regex": search_term, "$options": "i"}}, 
             {"description": {"$regex": search_term, "$options": "i"}}
         ]
-    })
+    }))
 
     return render_template('search.html', tasks=search_results, search_term=search_term)
+
+if __name__ == '__main__':
+    app.run(debug=True)
