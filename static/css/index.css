@@ -1,7 +1,7 @@
 /* styles for doc body*/
 body {
     font-family: Arial, sans-serif; /* font */
-    margin: 0; 
+    margin: 5px; 
     padding: 0; 
     background-color: #ffffff; /* background to white */
     color: #000; /* text color to black */
@@ -20,6 +20,11 @@ body {
     border: 1px solid #ccc; /* grey border for task */
     padding: 10px; /* inside padding */
     margin-bottom: 10px; 
+}
+
+.task:hover{
+    background-color: #86a5d0; /* hover background color */
+    cursor: pointer;
 }
 
 /* headings in task information */
@@ -50,3 +55,4 @@ button, input[type="submit"] {
 .edit-task {
     display: none;
 }
+
