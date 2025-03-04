@@ -43,5 +43,8 @@
             <a href="{{ url_for('show_completed') }}">
                 <button>Completed Tasks</button>
             </a>
+            <form action="{{ url_for('logout') }}" method="GET">
+                <button type="submit">Logout</button>
+            </form>
     </body>
 </html>

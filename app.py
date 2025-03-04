@@ -4,6 +4,9 @@ import os
 import pymongo
 from bson.objectid import ObjectId
 import datetime
+import flask_login
+import flask
+from flask_pymongo import PyMongo
 
 load_dotenv(override=True)
 
@@ -23,19 +26,119 @@ db = connection[DATABASE_NAME]
 tasks_collection = db["tasks"]
 tasks_collection.create_index("completed")
 
+users_collection = db["users"]
+users_collection.create_index("email", unique = True)
+
+db.tasks.insert_one({
+    "name": "Test Task",
+    "completed": False,
+    "deleted": False,
+    "due_date": "2025-01-01",
+    "description": "This is a test task",
+    "owner": "test@example.com",
+    "created_time": datetime.datetime.now()
+})
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'FlaskForce100'
+#app.config["MONGO_URI"] = os.getenv("CONNECTION_STRING")
+#mongo = pymongo(app)
+
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+#users = {'foo@bar.tld': {'password': 'secret'}}
+
+class User(flask_login.UserMixin):
+    pass
+
+@login_manager.user_loader
+def user_loader(email):
+    user_data = users_collection.find_one({"email": email})
+    if not user_data:
+        return None
+
+    user = User()
+    user.id = email
+    return user
+
+
+@login_manager.request_loader
+def request_loader(request):
+    email = request.form.get('email')
+    user_data = users_collection.find_one({"email": email})
+    if not user_data:
+        return None
+
+    user = User()
+    user.id = email
+    return user
 
 #Currently just prints "Home" to show app working, needs to acces task collection of DB and display tasks on template (HTML)
 @app.route('/')
 def show_home():
-    tasks = tasks_collection.find({"completed": False})
+    if not flask_login.current_user.is_authenticated:
+        return redirect(url_for('login'))  # Redirect to login if not logged in
+    
+    user_email = flask_login.current_user.id
+    tasks = tasks_collection.find({"completed": False, "owner": user_email})
     return render_template('index.html', tasks=tasks)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if flask.request.method == 'GET':
+        return render_template('login.html')
+
+    email = request.form['email']
+    password = request.form['password']
+    user_data = users_collection.find_one({"email": email, "password": password})
+
+    if user_data:
+        user = User()
+        user.id = email
+        flask_login.login_user(user)
+
+        next_page = request.args.get("next")  
+        return redirect(next_page or url_for('show_home'))
+
+    return 'Bad login'
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+
+    email = request.form['email']
+    password = request.form['password']
+
+    if users_collection.find_one({"email": email}):
+        return 'User already exists'
+
+    users_collection.insert_one({"email": email, "password": password})
+    return redirect(url_for('login'))
+
+@app.route('/protected')
+@flask_login.login_required
+def protected():
+    return render_template('protected.html', email=flask_login.current_user.id)
+
+@app.route('/logout')
+def logout():
+    flask_login.logout_user()
+    return redirect(url_for('login'))
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return redirect(url_for('login'))
+
 
 @app.route('/add', methods=['POST'])
 def add_task():
     task_name = request.form.get('task')
     due = request.form.get("due")
     description = request.form.get("description")
+    user_email = flask_login.current_user.id
     if task_name and due:
         task = {
             "name": task_name,
@@ -43,6 +146,7 @@ def add_task():
             "deleted": False,
             "due_date": due,
             "description": description,
+            "owner": user_email,
             "created_time": datetime.datetime.now()
         }
         tasks_collection.insert_one(task)
@@ -58,31 +162,29 @@ def delete_task(task_id):
 #Possible TODO: Delete it after completed or something else visually up to you
 @app.route('/complete/<task_id>')
 def complete_task(task_id):
-    task = tasks_collection.find_one({"_id": ObjectId(task_id)})
+    user_email = flask_login.current_user.id
+    task = tasks_collection.find_one({"_id": ObjectId(task_id), "owner": user_email})
     
     if task:
-        task["completed"] = True
-        db["completed"].insert_one(task)
-        tasks_collection.delete_one({"_id": ObjectId(task_id)})
+        tasks_collection.update_one({"_id": ObjectId(task_id)}, {"$set": {"completed": True}})
     
     return redirect(url_for('show_home'))
 
-@app.route('/readd/<task_id>')
-def readd_task(task_id):
-    task = db["completed"].find_one({"_id": ObjectId(task_id)})
-    
-    if task:
-        task["_id"] = ObjectId()
-        task["completed"] = False
-        db["tasks"].insert_one(task)
-        db["completed"].delete_one({"_id": ObjectId(task_id)})
-    
-    return redirect(url_for('show_completed'))
-
 @app.route('/completed')
 def show_completed():
-    completed_tasks = db["completed"].find({"completed": True})
+    user_email = flask_login.current_user.id
+    completed_tasks = tasks_collection.find({"completed": True, "owner": user_email})
     return render_template('completed.html', tasks=completed_tasks)
+
+@app.route('/readd/<task_id>')
+def readd_task(task_id):
+    user_email = flask_login.current_user.id
+    task = tasks_collection.find_one({"_id": ObjectId(task_id), "owner": user_email, "completed": True})
+    
+    if task:
+        tasks_collection.update_one({"_id": ObjectId(task_id)}, {"$set": {"completed": False}})
+    
+    return redirect(url_for('show_home'))
 
 #forms that will allow user to edit the name, description and due date.
 @app.route('/edit/<task_id>', methods=['POST'])
@@ -113,9 +215,12 @@ def search_tasks():
     search_term = request.args.get('search', '').strip()  # get search term
     if not search_term:
         return render_template('search.html', tasks=[], search_term="")  # empty page
+    
+    user_email = flask_login.current_user.id 
 
     # search for tasks based on input
     search_results = list(tasks_collection.find({
+        "owner": user_email,
         "$or": [
             {"name": {"$regex": search_term, "$options": "i"}}, 
             {"description": {"$regex": search_term, "$options": "i"}}
