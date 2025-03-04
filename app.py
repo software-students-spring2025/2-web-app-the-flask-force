@@ -40,7 +40,7 @@ db.tasks.insert_one({
 })
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'FlaskForce100'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 #app.config["MONGO_URI"] = os.getenv("CONNECTION_STRING")
 #mongo = pymongo(app)
 
