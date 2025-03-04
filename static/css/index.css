@@ -43,6 +43,10 @@ button, input[type="submit"] {
     cursor: pointer; /* pointer cursor - hover */
 }
 
+.delete_btn {
+    margin-top: 6px; /* Space between form elements */
+}
+
 .edit-task {
     display: none;
 }

@@ -5,6 +5,9 @@
         <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
     </head>
     <body>
+        <a href="{{ url_for('search_tasks') }}">
+                <button>Search Tasks</button>
+        </a>
         <h1>Task Manager</h1>
         <form action="{{ url_for('add_task')}}" method="POST" id="add-task-form">
             <input type="text" name="task" placeholder="Task name">
@@ -29,16 +32,16 @@
                         <input type="date" name="new_due" placeholder="New due date">
                         <input type="text" name="new_description" placeholder="New description">
                         <input type="submit" value="Edit">
-                        <br>
-                        <a href="{{ url_for('delete_task', task_id=task._id) }}">Delete Task</a>
-                        <br>
                         <button type="button" class="close">Close</button>
+                    </form>
+                    <form action = "{{ url_for('delete_task', task_id=task._id) }}" method="POST">
+                        <button type="submit" class="delete_btn">Delete Task</button>
                     </form>
                 </li>
             {% endfor %}
+        </ul>
             <a href="{{ url_for('show_completed') }}">
                 <button>Completed Tasks</button>
             </a>
-        </ul>
     </body>
 </html>
